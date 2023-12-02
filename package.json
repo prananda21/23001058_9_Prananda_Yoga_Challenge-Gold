@@ -1,0 +1,12 @@
+{
+  "name": "challenge-gold",
+  "version": "1.0.0",
+  "description": "Challenge Gold Binar - Backend Javascript",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Prananda Yoga",
+  "license": "ISC"
+}
