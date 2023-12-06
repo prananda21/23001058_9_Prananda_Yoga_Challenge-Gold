@@ -3,9 +3,9 @@ const userRouter = express.Router();
 
 const {formatResponse} = require('../response.js');
 let {users} = require('../db/db_users.js');
-const { getAllItem } = require('../handler/itemHandler.js');
+const { getAllUser } = require('../handler/userHandler.js');
 
-userRouter.get('/:userId', getAllItem);
+userRouter.get('/:userId', getAllUser);
 
 userRouter
     .route('/')
