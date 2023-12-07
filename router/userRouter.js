@@ -1,29 +1,17 @@
 const express = require('express');
 const userRouter = express.Router();
+const formatResponse = require('../response.js')
 
-const {formatResponse} = require('../response.js');
-let {users} = require('../db/db_users.js');
-const { getAllUser } = require('../handler/userHandler.js');
+let { users } = require('../db/db_users.js');
+const { getUserById, getAllUsers, postNewUser, deleteUserById } = require('../handler/userHandler.js');
 
-userRouter.get('/:userId', getAllUser);
+userRouter.route('/:userId')
+    .get(getUserById)
 
 userRouter
     .route('/')
-    .get((req, res) => {
-        let message = 'Success';
-        res.status(200).json(formatResponse(users, message))
-    })
-
-    .post((req, res) => {
-        let data = {
-            id: users[users.length -1].id + 1,
-            name: req.body.name,
-            email: req.body.email,
-        };
-
-        users.push(data);
-
-        res.status(201).json(formatResponse(data, 'Success'))
-    });
+    .get(getAllUsers)
+    .post(postNewUser)
+    .delete(deleteUserById)
 
 module.exports = userRouter;

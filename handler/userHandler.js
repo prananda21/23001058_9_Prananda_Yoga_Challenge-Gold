@@ -1,7 +1,7 @@
 const {formatResponse} = require('../response.js');
 const {users} = require('../db/db_users.js')
 
-const getAllUser = (req, res) => {
+const getUserById = (req, res) => {
     let data = {};
     let message = 'Success';
     let isUserFound = false;
@@ -9,7 +9,7 @@ const getAllUser = (req, res) => {
     let id = req.params.userId;
 
     for (let i = 0; i < users.length; i++){
-        if (users[i].id === id){
+        if (users[i].id === +id){
             data = users[i];
             isUserFound = true;
             break;
@@ -23,4 +23,34 @@ const getAllUser = (req, res) => {
     }
 }
 
-module.exports = {getAllUser}
+const deleteUserById = (req, res) => {
+    let idBody = req.body.userId;
+
+    const index = users.findIndex((user) => user.id === idBody)
+
+    if(index !== -1) {
+        users.splice(index, 1);
+        res.status(200).json(`User with id ${idBody} deleted!`)
+    } else {
+        res.status(404).json(`User with id ${idBody} not found or has been deleted`)
+    }
+}
+
+const getAllUsers = (req, res) => {
+    let message = 'Success';
+    res.status(200).json(formatResponse(users, message));
+};
+
+const postNewUser = (req, res) => {
+    let data = {
+        id: users[users.length -1].id + 1,
+        name: req.body.name,
+        email: req.body.email,
+    };
+
+    users.push(data);
+
+    res.status(201).json(formatResponse(data, 'Success'));
+}
+
+module.exports = { getUserById, deleteUserById, getAllUsers, postNewUser }
