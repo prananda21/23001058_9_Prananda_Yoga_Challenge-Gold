@@ -2,13 +2,14 @@ const express = require('express');
 const itemRouter = express.Router();
 
 let {items} = require('../db/db_items.js');
-const { getAllItem, getItemById, postNewItem } = require('../handler/itemHandler.js');
+const { itemController } = require('../controller/itemController.js');
 
-itemRouter.get('/:itemId', getItemById);
+itemRouter.route('/:itemId')
+    .get(itemController.getItemById)
 
 itemRouter
     .route('/')
-    .get(getAllItem)
-    .post(postNewItem);
+    .get(itemController.getAllItem)
+    .post(itemController.postNewItem);
 
 module.exports = itemRouter;
