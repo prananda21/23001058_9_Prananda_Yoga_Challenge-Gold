@@ -1,5 +1,5 @@
 const {formatResponse} = require('../response.js');
-const {items} = require('../db/db_items.js')
+const items = require('../db/db_items.json')
 
 class itemController {
     static getAllItem (req, res) {

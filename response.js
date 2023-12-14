@@ -1,7 +1,7 @@
 const formatResponse = (data, message) => {
     return {
-        data: data,
-        message: message
+        data: data ? data : null,
+        message: message ? message : 'Success'
     }
 }
 

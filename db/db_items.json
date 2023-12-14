@@ -1,0 +1,20 @@
+[
+    {
+        "id": 101,
+        "name": "Playstation 5",
+        "price": 1099,
+        "quantity": 5
+    },
+    {
+        "id": 102,
+        "name": "Nintendo Switch",
+        "price": 799,
+        "quantity": 8
+    },
+    {
+        "id": 103,
+        "name": "Xbox One",
+        "price": 999,
+        "quantity": 11
+    }
+]
