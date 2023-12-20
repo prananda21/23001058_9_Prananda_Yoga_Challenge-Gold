@@ -1,1 +1,20 @@
-[{"id":1,"name":"Wilson","email":"wilson@mail.com"},{"id":2,"name":"Lola","email":"lola@mail.com"},{"id":3,"name":"Sal Priadi","email":"salpriadi@mail.com"}]
+[
+	{
+		"id": 1,
+		"name": "Wilson",
+		"email": "wilson@mail.com",
+		"password": "wilson123"
+	},
+	{
+		"id": 2,
+		"name": "Lola Elisa",
+		"email": "lolalisa@mail.com",
+		"password": "lola1234"
+	},
+	{
+		"id": 3,
+		"name": "Sal Priadi",
+		"email": "salpriadi@mail.com",
+		"password": "salpriadi123"
+	}
+]
