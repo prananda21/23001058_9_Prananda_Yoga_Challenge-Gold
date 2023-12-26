@@ -1,26 +1,26 @@
-const express = require("express"),
-	app = express(),
-	port = 3000,
-	morgan = require("morgan");
+const express = require("express");
+const app = express();
+const port = 3000;
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
 app.use(express.json()); // built in middleware to parsing to json
 app.use(morgan("short"));
+app.use(bodyParser.json());
 
-const userRouter = require("./router/userRouter.js"),
-	itemRouter = require("./router/itemRouter.js");
+const [userRouter, userLogRouter] = require("./router/userRouter.js");
+const itemRouter = require("./router/itemRouter.js");
 
 // root => main page
 app.get("/", (req, res) => {
-	res.send("Hello World!!");
+  res.send("Hello World!!");
 });
 
-app.use("/users", userRouter);
-
 // method 1. Register New Customer
-app.use("/users/register", userRouter);
+app.use("/users/", userRouter);
 
-// method 2. Login Customer => return value login
-app.use("/users/login", userRouter);
+// method 2. Login & Logout Customer
+app.use("/users/", userLogRouter);
 
 // method 3. display Data Item
 app.use("/items", itemRouter);
@@ -32,5 +32,5 @@ app.use("/items", itemRouter);
 // ....
 
 app.listen(port, () => {
-	console.log(`This app listening at http://localhost:${port}`);
+  console.log(`This app listening at http://localhost:${port}`);
 });

@@ -1,22 +1,21 @@
 const express = require("express");
 const userRouter = express.Router();
+const userLogRouter = express.Router();
 const {
-	userController,
-	registerController,
-	loginController,
+  BasicUserController,
+  registerController,
+  loginController,
 } = require("../controller/userController.js");
 
-userRouter.route("/").get(userController.getAllUsers);
+userRouter.route("/").get(BasicUserController.getAllUsers);
 
-userRouter
-	.route("/:id")
-	.get(userController.getUserById)
-	.delete(userController.deleteUserById);
+userRouter.route("/:id").get(BasicUserController.getUserById);
 
 userRouter.route("/register").post(registerController.postRegisterUser);
 
-userRouter.route("/login").post(loginController.postLoginUser);
+userLogRouter
+  .route("/auth")
+  .post(loginController.postLoginUser)
+  .delete(loginController.deleteLogoutUser);
 
-userRouter.route("logout").delete(loginController.deleteLoginUser);
-
-module.exports = userRouter;
+module.exports = [userRouter, userLogRouter];
