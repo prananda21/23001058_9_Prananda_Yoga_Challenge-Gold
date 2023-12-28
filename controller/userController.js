@@ -1,6 +1,7 @@
 const { formatResponse } = require("../response.js");
 const usersData = require("../db/db_users.json");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
 
 class BasicUserController {
   static getAllUsers(req, res) {
@@ -23,13 +24,14 @@ class BasicUserController {
 }
 
 class registerController {
-  static postRegisterUser(req, res, next) {
+  static async postRegisterUser(req, res) {
     let { name, email, password } = req.body;
     let id = usersData[usersData.length - 1].id + 1;
     let statusCode = 201;
     let message = undefined;
+    let usersData = [];
 
-    let data = {
+    const data = {
       id: id,
       name: name,
       email: email,
@@ -40,7 +42,26 @@ class registerController {
     const foundEmail = usersData.find((i) => i.email === email);
 
     if (!foundName && !foundEmail) {
-      usersData.push(data);
+      const saltRounds = 10;
+      bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err) {
+          console.error("Error hashing password:", err);
+        } else {
+          console.log("Hashed password", hash);
+          const data = {
+            id: id,
+            name: name,
+            email: email,
+            password: hash,
+          };
+          usersData.push(data);
+          fs.writeFileSync(
+            "./db/db_users.json",
+            JSON.stringify(usersData),
+            "utf-8"
+          );
+        }
+      });
     } else {
       if (foundName) {
         statusCode = 404;
@@ -52,9 +73,7 @@ class registerController {
         return res.status(statusCode).json(formatResponse(null, message));
       }
     }
-    next();
 
-    fs.writeFileSync("./db/db_users.json", JSON.stringify(usersData), "utf-8");
     return res.status(statusCode).json(formatResponse(data));
   }
 }
@@ -97,18 +116,20 @@ class loginController {
 
   static deleteLogoutUser(req, res) {
     const userToken = usersData.find((i) => i.authToken);
+    let statusCode = 200;
     let message = "Log out Successfully";
 
     for (const i in usersData) {
       if (userToken) {
         delete usersData[i].authToken;
       } else {
+        statusCode = 404;
         message = "Login Action Needed!";
       }
     }
 
     fs.writeFileSync("./db/db_users.json", JSON.stringify(usersData), "utf-8");
-    return res.json(formatResponse(null, message));
+    return res.status(statusCode).json(formatResponse(null, message));
   }
 }
 

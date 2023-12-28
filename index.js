@@ -3,10 +3,12 @@ const app = express();
 const port = 3000;
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const fs = require("fs");
 
 app.use(express.json()); // built in middleware to parsing to json
 app.use(morgan("short"));
 app.use(bodyParser.json());
+fs.writeFileSync("./controller/usersController.json", "[]"); // suspek error server terus restart
 
 const [userRouter, userLogRouter] = require("./router/userRouter.js");
 const itemRouter = require("./router/itemRouter.js");
