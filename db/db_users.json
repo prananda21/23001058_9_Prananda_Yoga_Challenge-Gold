@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "846724475d",
+    "name": "Meidiana Tahir",
+    "email": "medianat22@mail.com",
+    "password": "$2b$10$QRF1CR0ORNta.Id.CrNOC.MqR.PPtorr1Iz4idl21lsNlnOfLcYZ."
+  },
+  {
+    "id": "4da206473f",
+    "name": "Baskara Putra",
+    "email": "baskaraputra11@mail.com",
+    "password": "$2b$10$qgaNizGRW1SzXb/SJtzIyO5mCcCEyDLgYtAF69sX1OlWSYf6Q9A5a"
+  },
+  {
+    "id": "5986d61042",
+    "email": "binar@mail.com",
+    "name": "Binar",
+    "password": "$2b$10$B38zO1e9yx9o9VD2jbVX6eUOfAUGoPwNMqHnMD0zHJm7zQ37W4IhO",
+    "authToken": "binar@mail.com-1703776626498"
+  },
+  {
+    "id": "8221f1b3b4",
+    "name": "Academy",
+    "email": "academy@mail.com",
+    "password": "$2b$10$OP7Kuuk.CPzmWE0cd61.gOnzQJFusY7Zy094AE6X3wEyUEQDl0dSq"
+  }
+]
