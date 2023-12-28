@@ -2,6 +2,8 @@ const { formatResponse } = require("../response.js");
 const usersData = require("../db/db_users.json");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
+const { nanoid, customAlphabet } = require("nanoid");
+const { log } = require("console");
 
 class BasicUserController {
   static getAllUsers(req, res) {
@@ -25,18 +27,43 @@ class BasicUserController {
 
 class registerController {
   static async postRegisterUser(req, res) {
+    const usersData = require("../db/db_users.json");
     let { name, email, password } = req.body;
-    let id = usersData[usersData.length - 1].id + 1;
-    let statusCode = 201;
-    let message = undefined;
-    let usersData = [];
-
+    const existingId = [];
     const data = {
-      id: id,
+      id: null,
       name: name,
       email: email,
       password: password,
     };
+
+    function generateUserId() {
+      fs.readFile(
+        "../challenge-gold/db/db_users.json",
+        "utf-8",
+        (err, data) => {
+          if (err) {
+            console.log("Error reading db_users.json", err);
+          }
+
+          try {
+            existingId.push(...usersData.map((data) => data.id));
+          } catch (error) {
+            console.log("Error parsing db_users.json", error);
+          }
+        }
+      );
+
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const nanoid = customAlphabet("1234567890abcdef", 10);
+          resolve((data.id = nanoid()));
+        }, 100);
+      });
+    }
+
+    let statusCode = 201;
+    let message = undefined;
 
     const foundName = usersData.find((i) => i.name === name);
     const foundEmail = usersData.find((i) => i.email === email);
@@ -47,19 +74,30 @@ class registerController {
         if (err) {
           console.error("Error hashing password:", err);
         } else {
-          console.log("Hashed password", hash);
-          const data = {
-            id: id,
-            name: name,
-            email: email,
-            password: hash,
-          };
-          usersData.push(data);
-          fs.writeFileSync(
-            "./db/db_users.json",
-            JSON.stringify(usersData),
-            "utf-8"
-          );
+          generateUserId().then((id) => {
+            id = id;
+            console.log("Hashed password", hash);
+            const dataPush = {
+              id: id,
+              name: name,
+              email: email,
+              password: hash,
+            };
+
+            const data = {
+              id: id,
+              name: name,
+              email: email,
+            };
+            usersData.push(dataPush);
+            fs.writeFileSync(
+              "./db/db_users.json",
+              JSON.stringify(usersData),
+              "utf-8"
+            );
+            console.log(data);
+            return res.status(statusCode).json(formatResponse(data));
+          });
         }
       });
     } else {
@@ -73,45 +111,65 @@ class registerController {
         return res.status(statusCode).json(formatResponse(null, message));
       }
     }
-
-    return res.status(statusCode).json(formatResponse(data));
   }
 }
 
 class loginController {
   static postLoginUser(req, res) {
     let { email, password } = req.body;
-    const userEmail = usersData.find((i) => i.email === email);
-    const userPassword = usersData.find((i) => i.password === password);
+    async function login(email, password) {
+      const userEmail = usersData.find((i) => i.email === email);
+      if (userEmail) {
+        const data = {
+          id: userEmail.id,
+          email: userEmail.email,
+          name: userEmail.name,
+          password: userEmail.password,
+        };
+      } else {
+        return false;
+      }
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Missing Email or Password!" });
-    }
+      const userPassword = await bcrypt.compare(password, userEmail.password);
+      if (userPassword) {
+        const data = {
+          id: userEmail.id,
+          email: userEmail.email,
+          name: userEmail.name,
+          password: userEmail.password,
+        };
+        const authToken = `${email}-${Date.now()}`;
+        const userDataToken = Object.assign(data, {
+          authToken: authToken,
+        });
 
-    if (!userEmail) {
-      return res.status(401).json({ message: "Invalid Email!" });
-    }
-    if (!userPassword) {
-      return res.status(401).json({ message: "Invalid Password!" });
-    }
+        for (const i in usersData) {
+          if (usersData[i].email === email) {
+            usersData[i] = userDataToken;
+          }
+        }
 
-    const userData = {
-      id: userEmail.id,
-      email: userEmail.email,
-      name: userEmail.name,
-      password: userEmail.password,
-    };
-    const authToken = `${email}-${Date.now()}`;
-    const userDataToken = Object.assign(userData, { authToken: authToken });
-
-    for (const i in usersData) {
-      if (usersData[i].email === userEmail.email) {
-        usersData[i] = userDataToken;
+        fs.writeFileSync(
+          "./db/db_users.json",
+          JSON.stringify(usersData),
+          "utf-8"
+        );
+        return res.json(formatResponse({ authToken }, `Welcome, ${data.name}`));
       }
     }
 
-    fs.writeFileSync("./db/db_users.json", JSON.stringify(usersData), "utf-8");
-    return res.json(formatResponse({ authToken }, `Welcome, ${userData.name}`));
+    login(email, password)
+      .then((isAuthenticated) => {
+        if (isAuthenticated) {
+          console.log;
+          ("Login successfully");
+        } else {
+          console.log("Invalid username or password");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during login", error);
+      });
   }
 
   static deleteLogoutUser(req, res) {
