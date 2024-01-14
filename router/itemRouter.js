@@ -7,6 +7,6 @@ itemRouter
   .get(itemController.getAllItem)
   .post(itemController.postNewItem);
 
-itemRouter.route("/:itemId").get(itemController.getItemById);
+itemRouter.route("/:id").get(itemController.getItemById);
 
 module.exports = itemRouter;

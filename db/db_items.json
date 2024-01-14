@@ -1,20 +1,5 @@
 [
-  {
-    "id": "B01",
-    "name": "Playstation 5",
-    "quantity": 5,
-    "price": 499
-  },
-  {
-    "id": "B02",
-    "name": "Nintendo Switch",
-    "quantity": 8,
-    "price": 199
-  },
-  {
-    "id": "B03",
-    "name": "Xbox One",
-    "quantity": 11,
-    "price": 499
-  }
+  { "id": "ITEM_zMU6l", "name": "Playstation 5", "price": 499, "stock": 5 },
+  { "id": "ITEM_Iy22V", "name": "XBox One", "price": 299, "stock": 8 },
+  { "id": "ITEM_9kcE4", "name": "Nintendo Switch", "price": 199, "stock": 4 }
 ]
