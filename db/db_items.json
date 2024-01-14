@@ -1,20 +1,20 @@
 [
-	{
-		"id": 101,
-		"name": "Playstation 5",
-		"price": 1099,
-		"quantity": 5
-	},
-	{
-		"id": 102,
-		"name": "Nintendo Switch",
-		"price": 799,
-		"quantity": 8
-	},
-	{
-		"id": 103,
-		"name": "Xbox One",
-		"price": 999,
-		"quantity": 11
-	}
+  {
+    "id": "B01",
+    "name": "Playstation 5",
+    "quantity": 5,
+    "price": 499
+  },
+  {
+    "id": "B02",
+    "name": "Nintendo Switch",
+    "quantity": 8,
+    "price": 199
+  },
+  {
+    "id": "B03",
+    "name": "Xbox One",
+    "quantity": 11,
+    "price": 499
+  }
 ]

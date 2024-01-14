@@ -1,6 +1,5 @@
 const express = require("express");
 const userRouter = express.Router();
-const userLogRouter = express.Router();
 const {
   BasicUserController,
   registerController,
@@ -13,9 +12,9 @@ userRouter.route("/:id").get(BasicUserController.getUserById);
 
 userRouter.route("/register").post(registerController.postRegisterUser);
 
-userLogRouter
+userRouter
   .route("/auth")
   .post(loginController.postLoginUser)
   .delete(loginController.deleteLogoutUser);
 
-module.exports = [userRouter, userLogRouter];
+module.exports = userRouter;

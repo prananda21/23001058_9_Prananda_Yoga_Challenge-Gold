@@ -1,0 +1,13 @@
+[
+  {
+    "id": "8221f1b3b4",
+    "email": "academy@mail.com",
+    "authToken": "academy@mail.com-1704555448920",
+    "order": {
+      "id": "B01",
+      "name": "Playstation 5",
+      "quantity": 2,
+      "price": 998
+    }
+  }
+]

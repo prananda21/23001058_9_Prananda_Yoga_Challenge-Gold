@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Challenge Gold Binar - Backend Javascript",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +14,10 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
-    "morgan": "^1.10.0"
+    "install": "^0.13.0",
+    "morgan": "^1.10.0",
+    "nanoid": "^3.3.7",
+    "npm": "^10.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

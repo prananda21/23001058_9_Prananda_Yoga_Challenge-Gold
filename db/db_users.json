@@ -1,27 +1,26 @@
 [
   {
-    "id": "846724475d",
-    "name": "Meidiana Tahir",
-    "email": "medianat22@mail.com",
-    "password": "$2b$10$QRF1CR0ORNta.Id.CrNOC.MqR.PPtorr1Iz4idl21lsNlnOfLcYZ."
-  },
-  {
-    "id": "4da206473f",
+    "id": "USER_n6YQK",
     "name": "Baskara Putra",
-    "email": "baskaraputra11@mail.com",
-    "password": "$2b$10$qgaNizGRW1SzXb/SJtzIyO5mCcCEyDLgYtAF69sX1OlWSYf6Q9A5a"
+    "email": "baskaraputra@mail.com",
+    "phone_number": "0811111111",
+    "password": "$2b$10$u2XtnGdXrDHTMZx/Nv7kEOvlWjNBI3G0GOLlccg6nam7LNGD4HAaO",
+    "authToken": null
   },
   {
-    "id": "5986d61042",
-    "email": "binar@mail.com",
-    "name": "Binar",
-    "password": "$2b$10$B38zO1e9yx9o9VD2jbVX6eUOfAUGoPwNMqHnMD0zHJm7zQ37W4IhO",
-    "authToken": "binar@mail.com-1703776626498"
+    "id": "USER_glCKG",
+    "name": "Binar Academy",
+    "email": "binaracademy@mail.com",
+    "phone_number": "0811112222",
+    "password": "$2b$10$ZHBbKUq/ezuxBajJmDBwLObPgziT3UdIoknE5CMZvl8vJPKVcgN/u",
+    "authToken": null
   },
   {
-    "id": "8221f1b3b4",
-    "name": "Academy",
-    "email": "academy@mail.com",
-    "password": "$2b$10$OP7Kuuk.CPzmWE0cd61.gOnzQJFusY7Zy094AE6X3wEyUEQDl0dSq"
+    "id": "USER_julZW",
+    "name": "Meidiana Tahir",
+    "email": "meidianata@mail.com",
+    "phone_number": "081338992221",
+    "password": "$2b$10$wvM9/ARhWQ3.ryVk0/oxAOFlPH79MVTRZ4CmU6i5SWco5Fp8H6NY6",
+    "authToken": null
   }
 ]
