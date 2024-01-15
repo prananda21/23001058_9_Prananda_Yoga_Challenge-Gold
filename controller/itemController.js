@@ -1,34 +1,34 @@
 const { formatResponse } = require("../response.js");
-const items = require("../db/db_items.json");
+const itemsData = require("../db/db_items.json");
 const fs = require("fs");
 const generateId = require("../helper/generateId.js");
 
 class itemController {
   static getAllItem(req, res) {
     let message = "Success";
-    res.status(200).json(formatResponse(items, message));
+    res.status(200).json(formatResponse(itemsData, message));
   }
 
   static getItemById(req, res) {
     let id = req.params.id;
     let data = {};
     let message = "Success";
-    let isUserFound = false;
+    let isItemFound = false;
 
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].id === id) {
-        data = items[i];
-        isUserFound = true;
+    for (let i = 0; i < itemsData.length; i++) {
+      if (itemsData[i].id === id) {
+        data = itemsData[i];
+        isItemFound = true;
         break;
       }
     }
 
-    if (isUserFound) {
+    if (isItemFound) {
       res.status(200).json(formatResponse(data, message));
     } else {
       res
         .status(404)
-        .json(formatResponse(null, `Product with id ${id} not found`));
+        .json(formatResponse(null, `Item with id ${id} not found`));
     }
   }
 
@@ -43,7 +43,7 @@ class itemController {
 
       let message = "Success";
 
-      items.push(data);
+      itemsData.push(data);
       fs.writeFileSync("./db/db_items.json", JSON.stringify(items), "utf-8");
       res.status(201).json(formatResponse(data, message));
     });
