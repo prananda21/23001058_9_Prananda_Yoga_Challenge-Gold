@@ -5,6 +5,6 @@ const { OrderItemController } = require("../controller/orderController.js");
 orderRouter
   .route("/:id")
   .post(OrderItemController.postNewOrder)
-  .put(OrderItemController);
+  .put(OrderItemController.putUpdateStatusOrder);
 
 module.exports = orderRouter;

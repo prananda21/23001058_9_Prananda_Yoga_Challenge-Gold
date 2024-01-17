@@ -3,6 +3,7 @@ const usersData = require("../db/db_users.json");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const generateId = require("../helper/generateId.js");
+const generateDate = require("../helper/generateDate.js");
 
 class BasicUserController {
   static getAllUsers(_, res) {
@@ -11,6 +12,9 @@ class BasicUserController {
       name: i.name,
       email: i.email,
       phone_number: i.phone_number,
+      address: i.address,
+      createdAt: i.createdAt,
+      updatedAt: i.updatedAt,
     }));
     return res.status(200).json(formatResponse(filterData));
   }
@@ -25,6 +29,9 @@ class BasicUserController {
       name: user.name,
       email: user.email,
       phone_number: user.phone_number,
+      address: user.address,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
 
     if (user === undefined) {
@@ -38,7 +45,7 @@ class BasicUserController {
 
 class registerController {
   static async postRegisterUser(req, res) {
-    const { name, email, password, phone_number } = req.body;
+    const { name, email, phone_number, address, password } = req.body;
 
     let statusCode = 201;
     let message = undefined;
@@ -58,6 +65,9 @@ class registerController {
           name: name,
           email: email,
           phone_number: phone_number,
+          address: address,
+          createdAt: generateDate(),
+          updatedAt: null,
           password: hash,
           authToken: null,
         };
@@ -67,6 +77,9 @@ class registerController {
           name: name,
           email: email,
           phone_number: phone_number,
+          address: address,
+          createdAt: generateDate(),
+          updatedAt: null,
         };
 
         usersData.push(dataPush);
@@ -101,12 +114,17 @@ class loginController {
       name: userEmail.name,
       email: userEmail.email,
       phone_number: userEmail.phone_number,
+      address: userEmail.address,
+      createdAt: userEmail.createdAt,
+      updatedAt: userEmail.updatedAt,
       password: userEmail.password,
       authToken: null,
     };
 
     if (!userEmail) {
-      throw new Error(`User with email ${email} not found!`);
+      return res.json(
+        formatResponse(null, `User with email ${email} not found!`)
+      );
     }
 
     let authToken;
@@ -119,7 +137,7 @@ class loginController {
         authToken: authToken,
       });
     } else {
-      throw new Error("Incorrect password!");
+      return res.json(formatResponse(null, "Incorrect password!"));
     }
 
     for (const i in usersData) {

@@ -1,5 +1,26 @@
 [
-  { "id": "ITEM_zMU6l", "name": "Playstation 5", "price": 499, "stock": 5 },
-  { "id": "ITEM_Iy22V", "name": "XBox One", "price": 299, "stock": 8 },
-  { "id": "ITEM_9kcE4", "name": "Nintendo Switch", "price": 199, "stock": 4 }
+  {
+    "id": "ITEM_M3Ia-",
+    "name": "Nintendo Switch",
+    "price": 199,
+    "stock": 4,
+    "createdAt": "2024-01-17T12:33:00.150Z",
+    "updatedAt": null
+  },
+  {
+    "id": "ITEM_QkLyC",
+    "name": "Playstation 5",
+    "price": 399,
+    "stock": 1,
+    "createdAt": "2024-01-17T12:33:28.381Z",
+    "updatedAt": "2024-01-17T14:55:32.065Z"
+  },
+  {
+    "id": "ITEM__e48A",
+    "name": "XBox One",
+    "price": 399,
+    "stock": 1,
+    "createdAt": "2024-01-17T12:33:43.449Z",
+    "updatedAt": "2024-01-17T14:02:16.188Z"
+  }
 ]

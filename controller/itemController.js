@@ -2,6 +2,7 @@ const { formatResponse } = require("../response.js");
 const itemsData = require("../db/db_items.json");
 const fs = require("fs");
 const generateId = require("../helper/generateId.js");
+const generateDate = require("../helper/generateDate.js");
 
 class itemController {
   static getAllItem(req, res) {
@@ -34,17 +35,25 @@ class itemController {
 
   static async postNewItem(req, res) {
     generateId().then((id) => {
+      const { name, price, stock } = req.body;
+
       let data = {
         id: "ITEM_" + id,
-        name: req.body.name,
-        price: req.body.price,
-        stock: req.body.stock,
+        name: name,
+        price: price,
+        stock: stock,
+        createdAt: generateDate(),
+        updatedAt: null,
       };
 
       let message = "Success";
 
       itemsData.push(data);
-      fs.writeFileSync("./db/db_items.json", JSON.stringify(items), "utf-8");
+      fs.writeFileSync(
+        "./db/db_items.json",
+        JSON.stringify(itemsData),
+        "utf-8"
+      );
       res.status(201).json(formatResponse(data, message));
     });
   }

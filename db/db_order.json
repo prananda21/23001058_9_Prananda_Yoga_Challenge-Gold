@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "ORDER_98EzP",
+    "userId": "USER_rnw4u",
+    "createdAt": "2024-01-17T14:55:32.064Z",
+    "updatedAt": null,
+    "itemId": "ITEM_QkLyC",
+    "qty": 2,
+    "total_price": 798,
+    "isPaid": false,
+    "statusOrder": "Menunggu pembayaran..."
+  },
+  {
+    "id": "ORDER_oybGO",
+    "userId": "USER_rnw4u",
+    "createdAt": "2024-01-17T14:34:37.188Z",
+    "updatedAt": "2024-01-17T14:59:35.640Z",
+    "itemId": "ITEM_QkLyC",
+    "qty": 2,
+    "total_price": 798,
+    "isPaid": true,
+    "statusOrder": "Pembayaran Sukses!"
+  }
+]

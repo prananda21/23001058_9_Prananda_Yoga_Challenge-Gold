@@ -1,26 +1,24 @@
 [
   {
-    "id": "USER_n6YQK",
-    "name": "Baskara Putra",
-    "email": "baskaraputra@mail.com",
-    "phone_number": "0811111111",
-    "password": "$2b$10$u2XtnGdXrDHTMZx/Nv7kEOvlWjNBI3G0GOLlccg6nam7LNGD4HAaO",
-    "authToken": null
-  },
-  {
-    "id": "USER_glCKG",
-    "name": "Binar Academy",
-    "email": "binaracademy@mail.com",
-    "phone_number": "0811112222",
-    "password": "$2b$10$ZHBbKUq/ezuxBajJmDBwLObPgziT3UdIoknE5CMZvl8vJPKVcgN/u",
-    "authToken": "binaracademy@mail.com-1705302082342"
-  },
-  {
-    "id": "USER_julZW",
+    "id": "USER_7hH6o",
     "name": "Meidiana Tahir",
     "email": "meidianata@mail.com",
     "phone_number": "081338992221",
-    "password": "$2b$10$wvM9/ARhWQ3.ryVk0/oxAOFlPH79MVTRZ4CmU6i5SWco5Fp8H6NY6",
+    "address": "Jalan Inajadulu No. 7, Bekasi",
+    "createdAt": "2024-01-17T10:55:28.763Z",
+    "updatedAt": null,
+    "password": "$2b$10$p8eblHAnC1h9VvlZSQUcFOOzZp7LMKytC5sqOwQBo6KqjyHt.e46G",
     "authToken": null
+  },
+  {
+    "id": "USER_rnw4u",
+    "name": "Binar Academy",
+    "email": "binaracademy@mail.com",
+    "phone_number": "081338992223",
+    "address": "Jalan Binar No. 2, Bekasi",
+    "createdAt": "2024-01-17T12:34:43.248Z",
+    "updatedAt": null,
+    "password": "$2b$10$3q5aCZxMsHxM2GNWTz5SPOqqCOp3zvYy0ewCEJqUwawxD.VYHIeA.",
+    "authToken": "binaracademy@mail.com-1705494899616"
   }
 ]
