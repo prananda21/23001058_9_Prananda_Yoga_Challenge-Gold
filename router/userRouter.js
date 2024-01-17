@@ -2,19 +2,19 @@ const express = require("express");
 const userRouter = express.Router();
 const {
   BasicUserController,
-  registerController,
-  loginController,
+  RegisterController,
+  LoginController,
 } = require("../controller/userController.js");
 
 userRouter.route("/").get(BasicUserController.getAllUsers);
 
 userRouter.route("/:id").get(BasicUserController.getUserById);
 
-userRouter.route("/register").post(registerController.postRegisterUser);
+userRouter.route("/register").post(RegisterController.postRegisterUser);
 
 userRouter
   .route("/auth")
-  .post(loginController.postLoginUser)
-  .delete(loginController.deleteLogoutUser);
+  .post(LoginController.postLoginUser)
+  .delete(LoginController.deleteLogoutUser);
 
 module.exports = userRouter;

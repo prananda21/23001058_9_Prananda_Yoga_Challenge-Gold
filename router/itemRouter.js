@@ -1,12 +1,12 @@
 const express = require("express");
 const itemRouter = express.Router();
-const { itemController } = require("../controller/itemController.js");
+const { ItemController } = require("../controller/itemController.js");
 
 itemRouter
   .route("/")
-  .get(itemController.getAllItem)
-  .post(itemController.postNewItem);
+  .get(ItemController.getAllItem)
+  .post(ItemController.postNewItem);
 
-itemRouter.route("/:id").get(itemController.getItemById);
+itemRouter.route("/:id").get(ItemController.getItemById);
 
 module.exports = itemRouter;
