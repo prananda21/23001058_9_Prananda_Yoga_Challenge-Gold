@@ -4,7 +4,7 @@ const fs = require("fs");
 const generateId = require("../helper/generateId.js");
 const generateDate = require("../helper/generateDate.js");
 
-class itemController {
+class ItemController {
   static getAllItem(req, res) {
     let message = "Success";
     res.status(200).json(formatResponse(itemsData, message));
@@ -59,4 +59,4 @@ class itemController {
   }
 }
 
-module.exports = { itemController };
+module.exports = { ItemController };

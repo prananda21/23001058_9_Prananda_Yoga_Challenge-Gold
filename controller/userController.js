@@ -43,7 +43,7 @@ class BasicUserController {
   }
 }
 
-class registerController {
+class RegisterController {
   static async postRegisterUser(req, res) {
     const { name, email, phone_number, address, password } = req.body;
 
@@ -105,7 +105,7 @@ class registerController {
   }
 }
 
-class loginController {
+class LoginController {
   static async postLoginUser(req, res) {
     const { email, password } = req.body;
     const userEmail = usersData.find((i) => i.email === email);
@@ -180,4 +180,4 @@ class loginController {
   }
 }
 
-module.exports = { BasicUserController, registerController, loginController };
+module.exports = { BasicUserController, RegisterController, LoginController };
