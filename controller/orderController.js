@@ -7,6 +7,21 @@ const generateId = require("../helper/generateId.js");
 const generateDate = require("../helper/generateDate.js");
 
 class OrderItemController {
+  static getAllOrder(_, res) {
+    const filterData = ordersData.map((i) => ({
+      id: i.id,
+      userId: i.userId,
+      createdAt: i.createdAt,
+      updatedAt: i.updatedAt,
+      itemId: i.itemId,
+      qty: i.qty,
+      total_price: i.total_price,
+      isPaid: i.isPaid,
+      statusOrder: i.statusOrder,
+    }));
+    return res.status(200).json(formatResponse(filterData));
+  }
+
   static async postNewOrder(req, res) {
     let id_user = req.params.id;
     let { item_name, quantity } = req.body;
