@@ -1,7 +1,6 @@
 const { formatResponse } = require("../response.js");
 const itemsData = require("../db/db_items.json");
 const fs = require("fs");
-const generateId = require("../helper/generateId.js");
 const generateDate = require("../helper/generateDate.js");
 
 class ItemController {
@@ -11,7 +10,7 @@ class ItemController {
   }
 
   static getItemById(req, res) {
-    let id = req.params.id;
+    let id = +req.params.id;
     let data = {};
     let message = "Success";
     let isItemFound = false;
@@ -33,29 +32,63 @@ class ItemController {
     }
   }
 
-  static async postNewItem(req, res) {
-    generateId().then((id) => {
-      const { name, price, stock } = req.body;
+  static postNewItem(req, res) {
+    const { name, price, stock } = req.body;
 
-      let data = {
-        id: "ITEM_" + id,
-        name: name,
-        price: price,
-        stock: stock,
-        createdAt: generateDate(),
-        updatedAt: null,
-      };
+    let data = {
+      id: itemsData.length + 1,
+      name: name,
+      price: price,
+      stock: stock,
+      createdAt: generateDate(),
+      updatedAt: generateDate(),
+    };
 
-      let message = "Success";
+    let message = "Success";
 
-      itemsData.push(data);
-      fs.writeFileSync(
-        "./db/db_items.json",
-        JSON.stringify(itemsData),
-        "utf-8"
+    itemsData.push(data);
+    fs.writeFileSync("./db/db_items.json", JSON.stringify(itemsData), "utf-8");
+    res.status(201).json(formatResponse(data, message));
+  }
+
+  static updateQtyItem(req, res) {
+    const id = +req.params.id;
+    const stock = req.body.stock;
+    const findItem = itemsData.find((i) => i.id === +id);
+
+    let data = {
+      id: findItem?.id,
+      name: findItem?.name,
+      price: findItem?.price,
+      stock: findItem?.stock,
+      createdAt: findItem?.createdAt,
+      updatedAt: findItem?.updatedAt,
+    };
+
+    try {
+      for (const i in itemsData) {
+        if (findItem.id === itemsData[i].id) {
+          data.id = +id;
+          data.stock = stock;
+          data.updatedAt = generateDate();
+
+          let itemTarget = itemsData.findIndex((i) => i.id === +id);
+
+          itemsData.splice(itemTarget, 1, data);
+          fs.writeFileSync(
+            "./db/db_items.json",
+            JSON.stringify(itemsData),
+            "utf-8"
+          );
+
+          return res.status(200).json(formatResponse(data, "Success!"));
+        }
+      }
+    } catch (error) {
+      return res.json(
+        formatResponse(null, "Item tidak ditemukan, coba item lain!")
       );
-      res.status(201).json(formatResponse(data, message));
-    });
+    }
   }
 }
 

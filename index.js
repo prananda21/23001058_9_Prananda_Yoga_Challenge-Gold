@@ -16,48 +16,20 @@ app.get("/", (req, res) => {
 
 // method 1. Register New Customer and method 2. Login & Logout Customer
 app.use("/users", userRouter);
-app.use((req, res, next) => {
-  if (
-    req.method !== "GET" &&
-    req.method !== "POST" &&
-    req.method !== "DELETE"
-  ) {
-    res.status(405).json("Method Not Allowed!");
-  }
-  next();
-});
 
 // method 3. display Data Item
 app.use("/items", itemRouter);
-app.use((req, res, next) => {
-  if (req.method !== "GET" && req.method !== "POST") {
-    res.status(405).json("Method Not Allowed!");
-  }
-  next();
-});
 
 // method 4. create new order & method 5. update order status
 app.use("/order", orderRouter);
-app.use((req, res, next) => {
-  if (req.method !== "GET" && req.method !== "POST" && req.method !== "PUT") {
-    res.status(405).json("Method Not Allowed!");
-  }
-  next();
-});
 
-app.use((req, res, next) => {
-  if (req.method !== "GET") {
-    res.status(405).json("Method Not Allowed!");
-  }
-  next();
-});
-
-app.use((req, res) => {
-  res.status(404).json({
-    status: "fail",
-    errors: "Not Found",
-  });
-});
+// app.use((err, req, res, next) => {
+//   if (err instanceof TypeError) {
+//     res.status(400).json({ error: "Bad request: Invalid data type" });
+//   } else {
+//     next(err);
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`This app listening at http://localhost:${port}`);

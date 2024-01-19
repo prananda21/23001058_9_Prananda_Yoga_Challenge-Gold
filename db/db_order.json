@@ -1,24 +1,24 @@
 [
   {
-    "id": "ORDER_98EzP",
-    "userId": "USER_rnw4u",
-    "createdAt": "2024-01-17T14:55:32.064Z",
-    "updatedAt": null,
-    "itemId": "ITEM_QkLyC",
-    "qty": 2,
-    "total_price": 798,
-    "isPaid": false,
-    "statusOrder": "Menunggu pembayaran..."
+    "id": 1,
+    "userId": 4,
+    "createdAt": "2024-01-19T16:14:15.778Z",
+    "updatedAt": "2024-01-19T16:40:24.099Z",
+    "itemId": 1,
+    "qty": 1,
+    "total_price": 299,
+    "isPaid": true,
+    "statusOrder": "Pembayaran berhasil"
   },
   {
-    "id": "ORDER_oybGO",
-    "userId": "USER_rnw4u",
-    "createdAt": "2024-01-17T14:34:37.188Z",
-    "updatedAt": "2024-01-17T14:59:35.640Z",
-    "itemId": "ITEM_QkLyC",
-    "qty": 2,
-    "total_price": 798,
+    "id": 2,
+    "userId": 4,
+    "createdAt": "2024-01-19T16:14:37.102Z",
+    "updatedAt": "2024-01-19T16:40:14.005Z",
+    "itemId": 1,
+    "qty": 1,
+    "total_price": 299,
     "isPaid": true,
-    "statusOrder": "Pembayaran Sukses!"
+    "statusOrder": "Pembayaran berhasil"
   }
 ]

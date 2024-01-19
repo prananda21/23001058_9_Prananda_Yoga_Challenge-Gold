@@ -1,24 +1,50 @@
 [
   {
-    "id": "USER_7hH6o",
-    "name": "Meidiana Tahir",
-    "email": "meidianata@mail.com",
-    "phone_number": "081338992221",
-    "address": "Jalan Inajadulu No. 7, Bekasi",
-    "createdAt": "2024-01-17T10:55:28.763Z",
-    "updatedAt": null,
-    "password": "$2b$10$p8eblHAnC1h9VvlZSQUcFOOzZp7LMKytC5sqOwQBo6KqjyHt.e46G",
+    "id": 1,
+    "firstName": "Meidiana",
+    "lastName": "Tahir",
+    "email": "meidianatahir@mail.com",
+    "phone_number": "081332922111",
+    "address": "Jalan Angkasa No. 2, Bekasi",
+    "createdAt": "2024-01-19T08:25:59.594Z",
+    "updatedAt": "2024-01-19T08:25:59.595Z",
+    "password": "$2b$10$Q76s05CwKa8D6uAHBl3rV..20VmULVcFv9J49j05wInbyEamAinDC",
     "authToken": null
   },
   {
-    "id": "USER_rnw4u",
-    "name": "Binar Academy",
+    "id": 2,
+    "firstName": "Baskara",
+    "lastName": "Putra",
+    "email": "baskaraputra@mail.com",
+    "phone_number": "081332922124",
+    "address": "Jalan Mulia No. 22A, Cipete",
+    "createdAt": "2024-01-19T08:26:33.668Z",
+    "updatedAt": "2024-01-19T08:26:33.669Z",
+    "password": "$2b$10$gpSCrkHb.X2scfm.14HRT.bIbS16UeRyFJH/GMfFPGSzB0LI8dbla",
+    "authToken": null
+  },
+  {
+    "id": 3,
+    "firstName": "Binar",
+    "lastName": "Academy",
     "email": "binaracademy@mail.com",
-    "phone_number": "081338992223",
-    "address": "Jalan Binar No. 2, Bekasi",
-    "createdAt": "2024-01-17T12:34:43.248Z",
-    "updatedAt": null,
-    "password": "$2b$10$3q5aCZxMsHxM2GNWTz5SPOqqCOp3zvYy0ewCEJqUwawxD.VYHIeA.",
-    "authToken": "binaracademy@mail.com-1705564423206"
+    "phone_number": "081332922112",
+    "address": "Jalan Kemayoran No 21B, Jakarta Pusat",
+    "createdAt": "2024-01-19T08:27:33.076Z",
+    "updatedAt": "2024-01-19T08:27:33.076Z",
+    "password": "$2b$10$O7cZjPh4FtqldwKxnZ.LDejy.vIo.PQm6zpcQF3KE9N5LaMuMCVpy",
+    "authToken": null
+  },
+  {
+    "id": 4,
+    "firstName": "Sal",
+    "lastName": "Priadi",
+    "email": "salpriadi22@mail.com",
+    "phone_number": "08152010154541",
+    "address": "Jalan Gatot Subroto No.9A, Perumahan Cipinang City, Bekasi",
+    "createdAt": "2024-01-19T10:41:56.143Z",
+    "updatedAt": "2024-01-19T10:41:56.143Z",
+    "password": "$2b$10$Wzuy8N3d3Xb9ZP31U22u6eF.UyeP9jHqLC8kThmLQ.gV00X2QHKL2",
+    "authToken": "salpriadi22@mail.com-1705660931183"
   }
 ]

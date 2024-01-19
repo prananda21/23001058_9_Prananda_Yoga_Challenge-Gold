@@ -3,8 +3,8 @@ const itemsData = require("../db/db_items.json");
 const usersData = require("../db/db_users.json");
 const ordersData = require("../db/db_order.json");
 const fs = require("fs");
-const generateId = require("../helper/generateId.js");
 const generateDate = require("../helper/generateDate.js");
+const { ConnectionTimedOutError } = require("sequelize");
 
 class OrderItemController {
   static getAllOrder(_, res) {
@@ -23,13 +23,12 @@ class OrderItemController {
   }
 
   static async postNewOrder(req, res) {
-    let id_user = req.params.id;
-    let { item_name, quantity } = req.body;
-    const users = usersData.find((i) => i.id === id_user);
-    const items = itemsData.find((i) => i.name === item_name);
+    let { idUser, itemName, quantity } = req.body;
+    const users = usersData.find((i) => i.id === idUser);
+    const items = itemsData.find((i) => i.name === itemName);
 
     let orderData;
-    if (users.authToken === null && users.id !== id_user) {
+    if (users?.authToken === null && users.id !== idUser) {
       return res
         .status(404)
         .json(formatResponse(null, "Butuh melakukan login dahulu!"));
@@ -44,69 +43,65 @@ class OrderItemController {
     if (!quantity || !Number.isInteger(quantity) || quantity <= 0) {
       return res
         .status(404)
-        .json(formatResponse(null, "kuantitas tidak valid"));
+        .json(formatResponse(null, "Kuantitas tidak valid"));
     }
 
-    generateId().then((id) => {
-      orderData = {
-        id: "ORDER_" + id,
-        userId: users.id,
-        createdAt: generateDate(),
-        updatedAt: null,
-        itemId: items.id,
-        qty: quantity,
-        total_price: quantity * items.price,
-        isPaid: false,
-        statusOrder: "Menunggu pembayaran...",
-      };
+    orderData = {
+      // yang ini ya bang
+      id: ordersData.length + 1,
+      userId: users.id,
+      createdAt: generateDate(),
+      updatedAt: generateDate(),
+      itemId: items.id,
+      qty: quantity,
+      total_price: quantity * items.price,
+      isPaid: false,
+      statusOrder: "Menunggu pembayaran...",
+    };
 
-      if (items) {
-        if (items.stock >= quantity) {
-          items.stock -= quantity;
-          items.updatedAt = generateDate();
-          fs.writeFileSync(
-            "./db/db_items.json",
-            JSON.stringify(itemsData),
-            "utf-8"
-          );
-        } else {
-          return res
-            .status(404)
-            .json(formatResponse(null, "Item kehabisan stok!"));
-        }
+    if (items) {
+      if (items.stock >= quantity) {
+        items.stock -= quantity;
+        items.updatedAt = generateDate();
+        fs.writeFileSync(
+          "./db/db_items.json",
+          JSON.stringify(itemsData),
+          "utf-8"
+        );
+      } else {
+        return res
+          .status(404)
+          .json(formatResponse(null, "Item kehabisan stok!"));
       }
+    }
 
-      ordersData.push(orderData);
-      fs.writeFileSync(
-        "./db/db_order.json",
-        JSON.stringify(ordersData),
-        "utf-8"
-      );
+    ordersData.push(orderData);
+    fs.writeFileSync("./db/db_order.json", JSON.stringify(ordersData), "utf-8");
 
-      for (const i in itemsData) {
-        if (items.id === id_user) {
-          itemsData[i].stock -= req.body.quantity;
-        }
+    for (const i in itemsData) {
+      if (items.id === idUser) {
+        itemsData[i].stock -= req.body.quantity;
       }
-      fs.writeFileSync(
-        "./db/db_items.json",
-        JSON.stringify(itemsData),
-        "utf-8"
-      );
+    }
+    fs.writeFileSync("./db/db_items.json", JSON.stringify(itemsData), "utf-8");
 
-      return res
-        .status(200)
-        .json(formatResponse(orderData, `Pesanan telah dibuat!`));
-    });
+    return res
+      .status(200)
+      .json(formatResponse(orderData, `Pesanan telah dibuat!`));
   }
 
   static putUpdateStatusOrder(req, res) {
-    let id_user = req.params.id;
-    let { id, isPaid } = req.body;
-    const users = usersData.find((i) => i.id === id_user);
-    const orders = ordersData.find((i) => i.id === id);
+    const orderId = +req.params.id;
+    const isPaid = req.body.isPaid;
+    const orders = ordersData.find((i) => i.id === +orderId);
 
-    let orderData = {
+    if (orders === -1) {
+      return res.json(
+        formatResponse(null, "Pesanan tidak ditemukan, coba pesanan lain!")
+      );
+    }
+
+    let data = {
       id: orders.id,
       userId: orders.userId,
       createdAt: orders.createdAt,
@@ -118,32 +113,15 @@ class OrderItemController {
       statusOrder: orders.statusOrder,
     };
 
-    if (orders.id !== id) {
-      return res.json(
-        formatResponse(null, "Pesanan tidak ditemukan, coba pesanan lain!")
-      );
-    } else {
-      if (isPaid === false) {
-        return res.json(formatResponse(null, "Pesanan belum dibayar!"));
-      } else {
-        for (const i in ordersData) {
-          if (orders.id === ordersData[i].id) {
-            orderData.updatedAt = generateDate();
-            orderData.isPaid = true;
-            orderData.statusOrder = "Pembayaran Sukses!";
+    data.updatedAt = generateDate();
+    data.isPaid = isPaid;
+    data.statusOrder = "Pembayaran berhasil";
 
-            ordersData.splice(orders.id, 1);
-            ordersData.push(orderData);
-            fs.writeFileSync(
-              "./db/db_order.json",
-              JSON.stringify(ordersData),
-              "utf-8"
-            );
-          }
-          return res.json(formatResponse(orderData, "Sukses!"));
-        }
-      }
-    }
+    let orderTarget = ordersData.findIndex((i) => i.id === orderId);
+    ordersData.splice(orderTarget, 1, data);
+
+    fs.writeFileSync("./db/db_order.json", JSON.stringify(ordersData), "utf-8");
+    res.status(200).json(formatResponse(data, "Sukses!"));
   }
 }
 

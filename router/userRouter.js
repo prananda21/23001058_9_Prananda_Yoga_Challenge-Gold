@@ -5,16 +5,34 @@ const {
   RegisterController,
   LoginController,
 } = require("../controller/userController.js");
+const methodNotAllowed = (req, res, next) =>
+  res.status(405).json({ error: "Method not supported!" });
 
-userRouter.route("/").get(BasicUserController.getAllUsers);
+const internalServerError = (err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({ error: err.message });
+};
 
-userRouter.route("/:id").get(BasicUserController.getUserById);
+userRouter
+  .route("/")
+  .get(BasicUserController.getAllUsers)
+  .all(methodNotAllowed); //DONE
 
-userRouter.route("/register").post(RegisterController.postRegisterUser);
+userRouter
+  .route("/register")
+  .post(RegisterController.postRegisterUser) // DONE
+  .all(methodNotAllowed);
 
 userRouter
   .route("/auth")
-  .post(LoginController.postLoginUser)
-  .delete(LoginController.deleteLogoutUser);
+  .post(LoginController.postLoginUser) // DONE
+  .delete(LoginController.deleteLogoutUser)
+  .all(methodNotAllowed);
+userRouter.use(internalServerError);
+
+userRouter
+  .route("/:id")
+  .get(BasicUserController.getUserById)
+  .all(methodNotAllowed); //DONE
 
 module.exports = userRouter;
