@@ -14,6 +14,7 @@ orderRouter
 
 orderRouter
   .route("/:id")
+  .get(OrderItemController.getOrderById)
   .put(OrderItemController.putUpdateStatusOrder)
   .all(methodNotAllowed);
 

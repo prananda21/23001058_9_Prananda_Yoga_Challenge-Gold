@@ -28,6 +28,11 @@ userRouter
   .post(LoginController.postLoginUser) // DONE
   .delete(LoginController.deleteLogoutUser)
   .all(methodNotAllowed);
+
+userRouter
+  .route("/auth/:id")
+  .delete(LoginController.deleteLogoutUser)
+  .all(methodNotAllowed);
 userRouter.use(internalServerError);
 
 userRouter

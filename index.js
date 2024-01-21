@@ -23,13 +23,12 @@ app.use("/items", itemRouter);
 // method 4. create new order & method 5. update order status
 app.use("/order", orderRouter);
 
-// app.use((err, req, res, next) => {
-//   if (err instanceof TypeError) {
-//     res.status(400).json({ error: "Bad request: Invalid data type" });
-//   } else {
-//     next(err);
-//   }
-// });
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Not Found",
+    message: `The requested endpoint "${req.method} ${req.url}" does not exist.`,
+  });
+});
 
 app.listen(port, () => {
   console.log(`This app listening at http://localhost:${port}`);

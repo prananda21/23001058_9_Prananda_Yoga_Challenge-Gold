@@ -1,93 +1,79 @@
 const { formatResponse } = require("../response.js");
-const itemsData = require("../db/db_items.json");
-const fs = require("fs");
-const generateDate = require("../helper/generateDate.js");
+const { Item } = require("../models");
 
 class ItemController {
-  static getAllItem(req, res) {
+  static async getAllItem(req, res) {
     let message = "Success";
-    res.status(200).json(formatResponse(itemsData, message));
-  }
-
-  static getItemById(req, res) {
-    let id = +req.params.id;
-    let data = {};
-    let message = "Success";
-    let isItemFound = false;
-
-    for (let i = 0; i < itemsData.length; i++) {
-      if (itemsData[i].id === id) {
-        data = itemsData[i];
-        isItemFound = true;
-        break;
-      }
-    }
-
-    if (isItemFound) {
-      res.status(200).json(formatResponse(data, message));
-    } else {
-      res
-        .status(404)
-        .json(formatResponse(null, `Item with id ${id} not found`));
-    }
-  }
-
-  static postNewItem(req, res) {
-    const { name, price, stock } = req.body;
-
-    let data = {
-      id: itemsData.length + 1,
-      name: name,
-      price: price,
-      stock: stock,
-      createdAt: generateDate(),
-      updatedAt: generateDate(),
-    };
-
-    let message = "Success";
-
-    itemsData.push(data);
-    fs.writeFileSync("./db/db_items.json", JSON.stringify(itemsData), "utf-8");
-    res.status(201).json(formatResponse(data, message));
-  }
-
-  static updateQtyItem(req, res) {
-    const id = +req.params.id;
-    const stock = req.body.stock;
-    const findItem = itemsData.find((i) => i.id === +id);
-
-    let data = {
-      id: findItem?.id,
-      name: findItem?.name,
-      price: findItem?.price,
-      stock: findItem?.stock,
-      createdAt: findItem?.createdAt,
-      updatedAt: findItem?.updatedAt,
-    };
+    let statusCode = 201;
 
     try {
-      for (const i in itemsData) {
-        if (findItem.id === itemsData[i].id) {
-          data.id = +id;
-          data.stock = stock;
-          data.updatedAt = generateDate();
-
-          let itemTarget = itemsData.findIndex((i) => i.id === +id);
-
-          itemsData.splice(itemTarget, 1, data);
-          fs.writeFileSync(
-            "./db/db_items.json",
-            JSON.stringify(itemsData),
-            "utf-8"
-          );
-
-          return res.status(200).json(formatResponse(data, "Success!"));
-        }
+      const items = await Item.findAll({});
+      if (items.length === 0) {
+        throw new Error("Database is empty!");
+      } else {
+        return res.status(statusCode).json({ items, message });
       }
     } catch (error) {
-      return res.json(
-        formatResponse(null, "Item tidak ditemukan, coba item lain!")
+      statusCode = 404;
+      return res.status(statusCode).json(error.message);
+    }
+  }
+
+  static async getItemById(req, res) {
+    let id = +req.params.id;
+    let statusCode = 200;
+    let message = "Success";
+
+    try {
+      const itembyId = await Item.findByPk(id);
+      if (!itembyId) {
+        throw new Error(`Item with Id ${id} not found!`);
+      } else {
+        return res.status(statusCode).json({ itembyId, message });
+      }
+    } catch (error) {
+      statusCode = 404;
+      return res.status(statusCode).json(error.message);
+    }
+  }
+
+  static async postNewItem(req, res) {
+    const { name, price, stock } = req.body;
+    let statusCode = 201;
+    let message = "Success";
+
+    try {
+      const itemCreate = await Item.create({
+        name: name,
+        price: price,
+        stock: stock,
+      });
+      return res.status(statusCode).json(formatResponse(itemCreate, message));
+    } catch (error) {
+      statusCode = 400;
+      message = "Something went wrong!";
+      res.status(statusCode).json({ message, error });
+    }
+  }
+
+  static async updateQtyItem(req, res) {
+    const id = +req.params.id;
+    const stock = req.body.stock;
+    let statusCode = 201;
+    let message = "Success!";
+
+    try {
+      const updateItem = await Item.update(
+        { stock: stock, updatedAt: new Date() },
+        { where: { id: id } }
       );
+
+      const itembyId = await Item.findByPk(id);
+      return res.status(statusCode).json({ itembyId, message });
+    } catch (error) {
+      statusCode = 404;
+      message = "Something went wrong!";
+      return res.status(statusCode).json({ error, message });
     }
   }
 }

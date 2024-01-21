@@ -1,127 +1,147 @@
 const { formatResponse } = require("../response.js");
-const itemsData = require("../db/db_items.json");
-const usersData = require("../db/db_users.json");
-const ordersData = require("../db/db_order.json");
 const fs = require("fs");
 const generateDate = require("../helper/generateDate.js");
-const { ConnectionTimedOutError } = require("sequelize");
+const { Order, Item } = require("../models");
+const item = require("../models/item.js");
 
 class OrderItemController {
-  static getAllOrder(_, res) {
-    const filterData = ordersData.map((i) => ({
-      id: i.id,
-      userId: i.userId,
-      createdAt: i.createdAt,
-      updatedAt: i.updatedAt,
-      itemId: i.itemId,
-      qty: i.qty,
-      total_price: i.total_price,
-      isPaid: i.isPaid,
-      statusOrder: i.statusOrder,
-    }));
-    return res.status(200).json(formatResponse(filterData));
+  static async getAllOrder(_, res) {
+    let message = "Success";
+    let statusCode = 201;
+
+    try {
+      const orders = await Order.findAll({});
+      if (orders.length === 0) {
+        throw new Error(error);
+      } else {
+        return res.status(statusCode).json({ orders, message });
+      }
+    } catch (error) {
+      statusCode = 404;
+      return res.status(statusCode).json({ error: "Database is empty!" });
+    }
+  }
+
+  static async getOrderById(req, res) {
+    const id = +req.params.id;
+    let statusCode = 200;
+    let message = "Success";
+
+    try {
+      const orderById = await Order.findByPk(id);
+      if (!orderById) {
+        throw new Error(error);
+      } else {
+        return res.status(statusCode).json({ orderById, message });
+      }
+    } catch (error) {
+      statusCode = 404;
+      return res
+        .status(statusCode)
+        .json({ error: `Order with Id ${id} not found!` });
+    }
   }
 
   static async postNewOrder(req, res) {
-    let { idUser, itemName, quantity } = req.body;
-    const users = usersData.find((i) => i.id === idUser);
-    const items = itemsData.find((i) => i.name === itemName);
+    // fix this first!
+    let { userId, itemName, quantity } = req.body;
+    let statusCode = 201;
+    let message = "Success";
+    let statusMessage = "Waiting for payment...";
 
-    let orderData;
-    if (users?.authToken === null && users.id !== idUser) {
-      return res
-        .status(404)
-        .json(formatResponse(null, "Butuh melakukan login dahulu!"));
-    }
+    try {
+      const searchItem = await Item.findOne({ where: { name: itemName } });
+      const orderCreate = await Order.create({
+        userId: userId,
+        itemId: searchItem.dataValues.id,
+        qty: quantity,
+        totalPrice: searchItem.dataValues.price * quantity,
+        status: "Not Paid",
+      });
 
-    if (!items) {
-      return res
-        .status(404)
-        .json(formatResponse(null, "Nama item tidak valid!"));
-    }
-
-    if (!quantity || !Number.isInteger(quantity) || quantity <= 0) {
-      return res
-        .status(404)
-        .json(formatResponse(null, "Kuantitas tidak valid"));
-    }
-
-    orderData = {
-      // yang ini ya bang
-      id: ordersData.length + 1,
-      userId: users.id,
-      createdAt: generateDate(),
-      updatedAt: generateDate(),
-      itemId: items.id,
-      qty: quantity,
-      total_price: quantity * items.price,
-      isPaid: false,
-      statusOrder: "Menunggu pembayaran...",
-    };
-
-    if (items) {
-      if (items.stock >= quantity) {
-        items.stock -= quantity;
-        items.updatedAt = generateDate();
-        fs.writeFileSync(
-          "./db/db_items.json",
-          JSON.stringify(itemsData),
-          "utf-8"
-        );
-      } else {
-        return res
-          .status(404)
-          .json(formatResponse(null, "Item kehabisan stok!"));
+      if (searchItem.dataValues.stock <= 0) {
+        throw new Error("Item out of stock!");
       }
+
+      await Item.update(
+        {
+          stock: searchItem.dataValues.stock - quantity,
+        },
+        { where: { name: itemName } }
+      );
+      return res
+        .status(statusCode)
+        .json({ orderCreate, message, statusMessage });
+    } catch (error) {
+      statusCode = 400;
+      message = "Something went wrong!";
+      return res.status(statusCode).json(error.message);
     }
-
-    ordersData.push(orderData);
-    fs.writeFileSync("./db/db_order.json", JSON.stringify(ordersData), "utf-8");
-
-    for (const i in itemsData) {
-      if (items.id === idUser) {
-        itemsData[i].stock -= req.body.quantity;
-      }
-    }
-    fs.writeFileSync("./db/db_items.json", JSON.stringify(itemsData), "utf-8");
-
-    return res
-      .status(200)
-      .json(formatResponse(orderData, `Pesanan telah dibuat!`));
   }
 
-  static putUpdateStatusOrder(req, res) {
-    const orderId = +req.params.id;
-    const isPaid = req.body.isPaid;
-    const orders = ordersData.find((i) => i.id === +orderId);
+  static async putUpdateStatusOrder(req, res) {
+    const id = +req.params.id;
+    const status = req.body.status;
+    let statusCode = 201;
+    let message = "Success";
+    let statusMessage = "Payment success, your order will arrive soon";
 
-    if (orders === -1) {
-      return res.json(
-        formatResponse(null, "Pesanan tidak ditemukan, coba pesanan lain!")
+    try {
+      const searchOrder = await Order.findOne({ where: { id: id } });
+      if (searchOrder.dataValues.id !== id) {
+        throw new Error("Order missing, try another order!");
+      }
+
+      if (status !== "Paid") {
+        throw new Error("Pay for your order as soon as possible!");
+      } else if (!status) {
+        throw new Error("Status unknown, try again!");
+      }
+
+      const updateOrder = await Order.update(
+        {
+          status: status,
+        },
+        { where: { id: id } }
       );
+
+      return res
+        .status(statusCode)
+        .json({ searchOrder, message, statusMessage });
+    } catch (error) {
+      console.log(error);
+      statusCode = 400;
+      message = "Something went wrong!";
+      return res.status(statusCode).json(error.message);
     }
 
-    let data = {
-      id: orders.id,
-      userId: orders.userId,
-      createdAt: orders.createdAt,
-      updatedAt: orders.updatedAt,
-      itemId: orders.itemId,
-      qty: orders.qty,
-      total_price: orders.total_price,
-      isPaid: orders.isPaid,
-      statusOrder: orders.statusOrder,
-    };
+    //   if (orders === -1) {
+    //     return res.json(
+    //       formatResponse(null, "Pesanan tidak ditemukan, coba pesanan lain!")
+    //     );
+    //   }
 
-    data.updatedAt = generateDate();
-    data.isPaid = isPaid;
-    data.statusOrder = "Pembayaran berhasil";
+    //   let data = {
+    //     id: orders.id,
+    //     userId: orders.userId,
+    //     createdAt: orders.createdAt,
+    //     updatedAt: orders.updatedAt,
+    //     itemId: orders.itemId,
+    //     qty: orders.qty,
+    //     total_price: orders.total_price,
+    //     isPaid: orders.isPaid,
+    //     statusOrder: orders.statusOrder,
+    //   };
 
-    let orderTarget = ordersData.findIndex((i) => i.id === orderId);
-    ordersData.splice(orderTarget, 1, data);
+    //   data.updatedAt = generateDate();
+    //   data.isPaid = isPaid;
+    //   data.statusOrder = "Pembayaran berhasil";
 
-    fs.writeFileSync("./db/db_order.json", JSON.stringify(ordersData), "utf-8");
-    res.status(200).json(formatResponse(data, "Sukses!"));
+    //   let orderTarget = ordersData.findIndex((i) => i.id === orderId);
+    //   ordersData.splice(orderTarget, 1, data);
+
+    //   fs.writeFileSync("./db/db_order.json", JSON.stringify(ordersData), "utf-8");
+    //   res.status(200).json(formatResponse(data, "Sukses!"));
   }
 }
 
