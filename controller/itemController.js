@@ -74,7 +74,7 @@ class ItemController {
       }
 
       const updateItem = await Item.update(
-        { stock: stock, updatedAt: new Date() },
+        { stock: itembyId.dataValues.stock + stock, updatedAt: new Date() },
         { where: { id: id } }
       );
 
