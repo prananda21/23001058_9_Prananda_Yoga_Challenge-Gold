@@ -8,6 +8,10 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
+        refereces: {
+          model: "Orders",
+          key: "itemId",
+        },
       },
       name: {
         type: Sequelize.STRING,

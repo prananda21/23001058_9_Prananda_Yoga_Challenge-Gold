@@ -27,7 +27,7 @@ class BasicUserController {
       }
     } catch (error) {
       statusCode = 404;
-      return res.status(200).json(error);
+      return res.status(200).json(error.message);
     }
   }
 

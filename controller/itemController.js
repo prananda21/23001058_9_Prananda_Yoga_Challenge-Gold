@@ -43,6 +43,12 @@ class ItemController {
     let message = "Success";
 
     try {
+      const findItem = await Item.findOne({ name: name });
+      if (name === "" || price === "" || stock === "") {
+        throw new Error("Body request should not be empty!");
+      } else if (findItem.dataValues.name === name) {
+        throw new Error("Item already exist!");
+      }
       const itemCreate = await Item.create({
         name: name,
         price: price,
@@ -51,8 +57,7 @@ class ItemController {
       return res.status(statusCode).json(formatResponse(itemCreate, message));
     } catch (error) {
       statusCode = 400;
-      message = "Something went wrong!";
-      res.status(statusCode).json({ message, error });
+      res.status(statusCode).json(error.message);
     }
   }
 

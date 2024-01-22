@@ -8,6 +8,10 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
+        refereces: {
+          model: "Orders",
+          key: "userId",
+        },
       },
       firstName: {
         type: Sequelize.STRING,
@@ -38,6 +42,7 @@ module.exports = {
       authToken: {
         type: Sequelize.STRING,
         allowNull: true,
+        unique: true,
       },
       createdAt: {
         allowNull: false,
