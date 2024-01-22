@@ -1,0 +1,346 @@
+{
+	"info": {
+		"_postman_id": "a8435ad5-1afa-4176-a541-cc75d300032a",
+		"name": "BingleShop - Challenge Gold (Prananda Yoga)",
+		"description": "API untuk project Challenge Gold Back End Javascript di Binar Academy pada aplikasi BingleShop (_E-commerce_). tersedia fitur sebagai berikut:\n\n- Register pelanggan baru\n    \n- Login pelanggan\n    \n- Menampilkan daftar item\n    \n- Membuat pesanan baru\n    \n- Memperbarui status pesanan",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29229023"
+	},
+	"item": [
+		{
+			"name": "Get All User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						""
+					]
+				},
+				"description": "Method ini digunakan untuk **mendapatkan seluruh user** dari database."
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/users/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"2"
+					]
+				},
+				"description": "Method ini digunakan untuk **mendapatkan user** sesuai **dengan id** yang diminta. Format id dikenakan pada **endpoint/params**"
+			},
+			"response": []
+		},
+		{
+			"name": "[MANDATORY] Register New User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\" : \"Binar\",\r\n    \"lastName\": \"Academy\",\r\n    \"email\" : \"binaracademy@mail.com\",\r\n    \"phoneNumber\": \"081335822390\",\r\n    \"address\": \"Jalan Ahamd Yani No.22A, Jakarta Pusat\",\r\n    \"password\": \"binaracademy\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/users/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"register"
+					]
+				},
+				"description": "Method ini digunakan untuk **registrasi** atau membuat **akun pelanggan baru**. Adapun request body yang diperlukan sebagai berikut:\n\n- firstName : Nama awal user\n- lastName : Nama akhir user\n- email : Email yang digunakan user\n- phoneNumber : Nomor telepon yang digunakan user\n- address : Alamat tinggal user\n- password : Password yang akan digunakan user"
+			},
+			"response": []
+		},
+		{
+			"name": "[MANDATORY] Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"binaracademy@mail.com\",\r\n    \"password\": \"binaracademy\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/users/auth",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"auth"
+					]
+				},
+				"description": "Method yang digunkan untuk melakukan login. Setelah login, user akan mendapatkan authToken yang berfungsi sebagai token penanda waktu login. request body yang digunakan sebagai berikut:\n\n- email : email yang telah didaftarkan user\n    \n- password : serangkaian kata sandi yang telah didaftarkan user"
+			},
+			"response": []
+		},
+		{
+			"name": "Logout User",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"authToken\": \"binaracademy@mail.com-1705913211357\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/users/auth/3",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"auth",
+						"3"
+					]
+				},
+				"description": "Method untuk melakukan logout dari aplikasi, diharapkan user mencatat authToken setelah login karena akan digunakan kembali untuk logout. request body yang digunakan yaitu:\n\n- authToken : token yang didapatkan setelah login"
+			},
+			"response": []
+		},
+		{
+			"name": "[MANDATORY] Get All Items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/items/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items",
+						""
+					]
+				},
+				"description": "Method ini digunakan untuk **mendapatkan seluruh** **item** dari database."
+			},
+			"response": []
+		},
+		{
+			"name": "[MANDATORY] Get Item by Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/items/5",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items",
+						"5"
+					]
+				},
+				"description": "Method ini digunakan untuk **mendapatkan item** sesuai **dengan id** yang diminta. Format id dikenakan pada **endpoint/params**"
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Playstation 5\",\r\n    \"price\": 5600000,\r\n    \"stock\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/items/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items",
+						""
+					]
+				},
+				"description": "Method ini digunakan untuk **membuat item baru**. Adapun request body yang diperlukan sebagai berikut:\n\n- name : Nama item\n- price : Harga item\n- stock : kuantitas item yang tersedia"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Stock Item",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stock\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/items/11",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items",
+						"11"
+					]
+				},
+				"description": "Method ini digunakan untuk **memperbarui stock item dengan menambahkan stock**. Adapun request body yang diperlukan sebagai berikut:\n\n- stock : kuantitas yang akan ditambahkan pada item"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Order",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/order/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						""
+					]
+				},
+				"description": "Method ini digunakan untuk **mendapatkan seluruh** **pesanan** dari database."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/order/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						"1"
+					]
+				},
+				"description": "Method ini digunakan untuk **mendapatkan pesanan** sesuai **dengan id** yang diminta. Format id dikenakan pada **endpoint/params**"
+			},
+			"response": []
+		},
+		{
+			"name": "[MANDATORY] Add New Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 2,\r\n    \"itemName\": \"PC Gaming\",\r\n    \"quantity\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/order",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order"
+					]
+				},
+				"description": "Method ini digunakan untuk **membuat pesanan baru**. Pastikan saat membuat pesanan, user sudah melakukan login. Adapun request body yang diperlukan sebagai berikut:\n\n- userId: id user yang telah melakukan login\n    \n- itemName: Nama item yang akan dipesan\n    \n- stock : kuantitas item yang dipesan"
+			},
+			"response": []
+		},
+		{
+			"name": "[MANDATORY] Update Order Status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\": \"Paid\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/order/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"order",
+						"2"
+					]
+				},
+				"description": "Method ini digunakan untuk **memperbarui status pesanan**. Status pesanan yang dimaksud adalah status pembayaran dan user diminta melakukan konfirmasi apakah sudah membayar. Adapun request body yang diperlukan sebagai berikut:\n\n- status: berisi status yang akan digunakan (\"Paid\" berarti sudah membayar dan \"Not Paid\" berarti belum membayar"
+			},
+			"response": []
+		}
+	]
+}
