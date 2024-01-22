@@ -63,17 +63,22 @@ class ItemController {
     let message = "Success!";
 
     try {
+      const itembyId = await Item.findByPk(id);
+      if (itembyId?.dataValues?.id !== id) {
+        throw new Error(`Item with Id ${id} not found!`);
+      }
+
       const updateItem = await Item.update(
         { stock: stock, updatedAt: new Date() },
         { where: { id: id } }
       );
 
-      const itembyId = await Item.findByPk(id);
-      return res.status(statusCode).json({ itembyId, message });
+      const data = await Item.findByPk(id);
+
+      return res.status(statusCode).json({ data, message });
     } catch (error) {
       statusCode = 404;
-      message = "Something went wrong!";
-      return res.status(statusCode).json({ error, message });
+      return res.status(statusCode).json(error.message);
     }
   }
 }

@@ -3,8 +3,13 @@ const app = express();
 const orderRouter = express.Router();
 const { OrderItemController } = require("../controller/orderController.js");
 
-const methodNotAllowed = (req, res, next) =>
-  res.status(405).json({ error: "Method not supported!" });
+const methodNotAllowed = (req, res, next) => {
+  try {
+    throw new Error("Method not supported!");
+  } catch (error) {
+    res.status(405).json(error.message);
+  }
+};
 
 orderRouter
   .route("/")

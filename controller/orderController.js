@@ -1,8 +1,4 @@
-const { formatResponse } = require("../response.js");
-const fs = require("fs");
-const generateDate = require("../helper/generateDate.js");
-const { Order, Item } = require("../models");
-const item = require("../models/item.js");
+const { User, Order, Item } = require("../models");
 
 class OrderItemController {
   static async getAllOrder(_, res) {
@@ -10,15 +6,34 @@ class OrderItemController {
     let statusCode = 201;
 
     try {
-      const orders = await Order.findAll({});
+      const orders = await Order.findAll({
+        include: [
+          {
+            model: User,
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "email",
+              "phoneNumber",
+              "address",
+              "authToken",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+          { model: Item },
+        ],
+      });
+
       if (orders.length === 0) {
-        throw new Error(error);
+        throw new Error("Database is empty!");
       } else {
         return res.status(statusCode).json({ orders, message });
       }
     } catch (error) {
       statusCode = 404;
-      return res.status(statusCode).json({ error: "Database is empty!" });
+      return res.status(statusCode).json(error.message);
     }
   }
 
@@ -28,17 +43,35 @@ class OrderItemController {
     let message = "Success";
 
     try {
-      const orderById = await Order.findByPk(id);
+      const orderById = await Order.findOne({
+        where: { id: id },
+        include: [
+          {
+            model: User,
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "email",
+              "phoneNumber",
+              "address",
+              "authToken",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+          { model: Item },
+        ],
+      });
+
       if (!orderById) {
-        throw new Error(error);
+        throw new Error(`Order with Id ${id} not found!`);
       } else {
         return res.status(statusCode).json({ orderById, message });
       }
     } catch (error) {
       statusCode = 404;
-      return res
-        .status(statusCode)
-        .json({ error: `Order with Id ${id} not found!` });
+      return res.status(statusCode).json(error.message);
     }
   }
 
@@ -51,6 +84,7 @@ class OrderItemController {
 
     try {
       const searchItem = await Item.findOne({ where: { name: itemName } });
+      const isLogin = await User.findOne({ where: { id: userId } });
       const orderCreate = await Order.create({
         userId: userId,
         itemId: searchItem.dataValues.id,
@@ -58,6 +92,10 @@ class OrderItemController {
         totalPrice: searchItem.dataValues.price * quantity,
         status: "Not Paid",
       });
+
+      if (!isLogin?.dataValues?.authToken) {
+        throw new Error("Need login action!");
+      }
 
       if (searchItem.dataValues.stock <= 0) {
         throw new Error("Item out of stock!");
@@ -69,12 +107,36 @@ class OrderItemController {
         },
         { where: { name: itemName } }
       );
-      return res
-        .status(statusCode)
-        .json({ orderCreate, message, statusMessage });
+
+      const data = await Order.findOne({
+        where: {
+          userId: userId,
+          itemId: searchItem.dataValues.id,
+          qty: quantity,
+        },
+        include: [
+          {
+            model: User,
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "email",
+              "phoneNumber",
+              "address",
+              "authToken",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+          { model: Item },
+        ],
+      });
+
+      return res.status(statusCode).json({ data, message, statusMessage });
     } catch (error) {
       statusCode = 400;
-      message = "Something went wrong!";
+      console.log(error);
       return res.status(statusCode).json(error.message);
     }
   }
@@ -87,61 +149,56 @@ class OrderItemController {
     let statusMessage = "Payment success, your order will arrive soon";
 
     try {
-      const searchOrder = await Order.findOne({ where: { id: id } });
-      if (searchOrder.dataValues.id !== id) {
-        throw new Error("Order missing, try another order!");
-      }
+      const findStatus = await Order.findOne({
+        where: { id: id },
+      });
+      if (status === "Paid" && findStatus.dataValues.status !== status) {
+        const updateOrder = await Order.update(
+          {
+            status: status,
+          },
+          { where: { id: id } }
+        );
 
-      if (status !== "Paid") {
+        const data = await Order.findOne({
+          where: { id: id },
+          include: [
+            {
+              model: User,
+              attributes: [
+                "id",
+                "firstName",
+                "lastName",
+                "email",
+                "phoneNumber",
+                "address",
+                "authToken",
+                "createdAt",
+                "updatedAt",
+              ],
+            },
+            { model: Item },
+          ],
+        });
+        if (data.dataValues.id !== id) {
+          throw new Error("Order missing, try another order!");
+        }
+
+        return res.status(statusCode).json({ data, message, statusMessage });
+      } else if (
+        status === "Not Paid" &&
+        findStatus.dataValues.status === status
+      ) {
         throw new Error("Pay for your order as soon as possible!");
-      } else if (!status) {
+      } else {
         throw new Error("Status unknown, try again!");
       }
-
-      const updateOrder = await Order.update(
-        {
-          status: status,
-        },
-        { where: { id: id } }
-      );
-
-      return res
-        .status(statusCode)
-        .json({ searchOrder, message, statusMessage });
     } catch (error) {
       console.log(error);
       statusCode = 400;
       message = "Something went wrong!";
       return res.status(statusCode).json(error.message);
     }
-
-    //   if (orders === -1) {
-    //     return res.json(
-    //       formatResponse(null, "Pesanan tidak ditemukan, coba pesanan lain!")
-    //     );
-    //   }
-
-    //   let data = {
-    //     id: orders.id,
-    //     userId: orders.userId,
-    //     createdAt: orders.createdAt,
-    //     updatedAt: orders.updatedAt,
-    //     itemId: orders.itemId,
-    //     qty: orders.qty,
-    //     total_price: orders.total_price,
-    //     isPaid: orders.isPaid,
-    //     statusOrder: orders.statusOrder,
-    //   };
-
-    //   data.updatedAt = generateDate();
-    //   data.isPaid = isPaid;
-    //   data.statusOrder = "Pembayaran berhasil";
-
-    //   let orderTarget = ordersData.findIndex((i) => i.id === orderId);
-    //   ordersData.splice(orderTarget, 1, data);
-
-    //   fs.writeFileSync("./db/db_order.json", JSON.stringify(ordersData), "utf-8");
-    //   res.status(200).json(formatResponse(data, "Sukses!"));
   }
 }
 

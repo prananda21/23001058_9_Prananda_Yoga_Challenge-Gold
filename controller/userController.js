@@ -1,6 +1,3 @@
-const { formatResponse } = require("../response.js");
-const usersData = require("../db/db_users.json");
-const fs = require("fs");
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
 
@@ -10,11 +7,23 @@ class BasicUserController {
     let statusCode = 200;
 
     try {
-      const users = await User.findAll({});
-      if (users.length === 0) {
+      const data = await User.findAll({
+        attributes: [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "phoneNumber",
+          "address",
+          "authToken",
+          "createdAt",
+          "updatedAt",
+        ],
+      });
+      if (data.length === 0) {
         throw new Error("Database is empty!");
       } else {
-        return res.status(statusCode).json({ users, message });
+        return res.status(statusCode).json({ data, message });
       }
     } catch (error) {
       statusCode = 404;
@@ -28,11 +37,24 @@ class BasicUserController {
     let message = "Success";
 
     try {
-      const userById = await User.findByPk(id);
-      if (!userById) {
+      const data = await User.findOne({
+        where: { id: id },
+        attributes: [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "phoneNumber",
+          "address",
+          "authToken",
+          "createdAt",
+          "updatedAt",
+        ],
+      });
+      if (!data) {
         throw new Error(`User with Id ${id} not found!`);
       } else {
-        return res.status(statusCode).json({ userById, message });
+        return res.status(statusCode).json({ data, message });
       }
     } catch (error) {
       statusCode = 404;
@@ -66,7 +88,7 @@ class RegisterController {
       }
       const saltRounds = 10;
       let hash = bcrypt.hashSync(password, saltRounds);
-      const userCreate = await User.create({
+      await User.create({
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -75,7 +97,22 @@ class RegisterController {
         password: hash,
       });
 
-      return res.status(statusCode).json({ userCreate, message });
+      const data = await User.findOne({
+        where: { firstName: firstName, lastName: lastName, email: email },
+        attributes: [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "phoneNumber",
+          "address",
+          "authToken",
+          "createdAt",
+          "updatedAt",
+        ],
+      });
+
+      return res.status(statusCode).json({ data, message });
     } catch (error) {
       return res.status(statusCode).json(error.message);
     }
@@ -131,7 +168,10 @@ class LoginController {
 
     try {
       const token = await User.findOne({ where: { authToken: authToken } });
-      if (token?.dataValues?.authToken === null) {
+      if (
+        !token?.dataValues?.authToken &&
+        token?.dataValues?.authToken !== authToken
+      ) {
         throw new Error("Login Action Needed!");
       }
 
