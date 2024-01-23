@@ -1,5 +1,18 @@
 const { User, Order, Item } = require("../models");
 
+//Note: Attributes disini sepertinya digunakan berkali kali di query dibawah juga. Maka bisa dijadikan variable saja seperti ini. Note ini berlaku untuk controller lain
+// const attributes = [
+//   "id",
+//   "firstName",
+//   "lastName",
+//   "email",
+//   "phoneNumber",
+//   "address",
+//   "authToken",
+//   "createdAt",
+//   "updatedAt",
+// ]
+
 class OrderItemController {
   static async getAllOrder(_, res) {
     let message = "Success";
@@ -83,6 +96,7 @@ class OrderItemController {
     let statusMessage = "Waiting for payment...";
 
     try {
+      //Note: Disini seharusnya tidak perlu lagi imelakukan find item karena table order sudah memiliki relasi dengan table item. Jika item tidak ada di table, maka order pun tidak akan bisa dicreate
       const searchItem = await Item.findOne({ where: { name: itemName } });
       const isLogin = await User.findOne({ where: { id: userId } });
       const orderCreate = await Order.create({
@@ -93,14 +107,17 @@ class OrderItemController {
         status: "Not Paid",
       });
 
+      //Note: Validasi ini harusnya dilakukan sebelum Order.create dipanggil
       if (!isLogin?.dataValues?.authToken) {
         throw new Error("Need login action!");
       }
 
+      //Note: Validasi ini harusnya dilakukan sebelum Order.create dipanggil
       if (searchItem.dataValues.stock <= 0) {
         throw new Error("Item out of stock!");
       }
 
+      //Note: Karena ada proses Order.create dan pengurangan stock, maka proses disini harusnya menggunakan transaction. Karena jika update disini gagal sedangkan order sudah dibuat, maka akan ada kesalahan data
       await Item.update(
         {
           stock: searchItem.dataValues.stock - quantity,
@@ -194,6 +211,7 @@ class OrderItemController {
         throw new Error("Status unknown, try again!");
       }
     } catch (error) {
+      //Note: Hapus console.lognya
       console.log(error);
       statusCode = 400;
       message = "Something went wrong!";

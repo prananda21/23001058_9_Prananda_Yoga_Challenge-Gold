@@ -87,6 +87,7 @@ class RegisterController {
         );
       }
       const saltRounds = 10;
+      //Note: Bisa gunakan hooks di model user untuk melakukan proses seperti ini. Nama hooksnya beforeCreate silahkan baca dokumentasi sequelize
       let hash = bcrypt.hashSync(password, saltRounds);
       await User.create({
         firstName: firstName,

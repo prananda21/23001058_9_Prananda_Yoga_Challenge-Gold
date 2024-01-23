@@ -14,6 +14,8 @@ class ItemController {
         return res.status(statusCode).json({ items, message });
       }
     } catch (error) {
+      //Note: Pada dasarnya perlu mapping atau validasi lebih lagi untuk menentukan apakah sebuah error mengembalikan status code 404 atau bahkan 500. Disini terlihat seperti pasti 404 karena hasil throw dari line 12. Tapi lain cerita jika ternyata errornya ada di koneksi database dimana line 10 langsung throw error dan ditangkap di catch. Untuk error seperti itu maka seharusnya statusnya 500 bukan 404. Bisa disempurnakan lagi untuk penentuan status codenya
+      // Note ini berlaku untuk endpoint lain
       statusCode = 404;
       return res.status(statusCode).json(error.message);
     }

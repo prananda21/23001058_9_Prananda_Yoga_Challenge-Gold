@@ -28,6 +28,7 @@ userRouter
   .post(RegisterController.postRegisterUser) // DONE
   .all(methodNotAllowed);
 
+//Note: Mestinya untuk login lebih cocok endpointnya /login dan logout endpoint /logout
 userRouter
   .route("/auth")
   .post(LoginController.postLoginUser) // DONE
