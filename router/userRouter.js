@@ -32,6 +32,7 @@ userRouter
 userRouter
   .route("/auth")
   .post(LoginController.postLoginUser) // DONE
+  //Note: Apa bedanya endpoint ini dengan yang dibawah?
   .delete(LoginController.deleteLogoutUser)
   .all(methodNotAllowed);
 
