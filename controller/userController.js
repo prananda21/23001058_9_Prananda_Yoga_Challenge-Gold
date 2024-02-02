@@ -1,5 +1,16 @@
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
+const attributes = [
+  "id",
+  "firstName",
+  "lastName",
+  "email",
+  "phoneNumber",
+  "address",
+  "authToken",
+  "createdAt",
+  "updatedAt",
+];
 
 class BasicUserController {
   static async getAllUsers(req, res) {
@@ -8,17 +19,7 @@ class BasicUserController {
 
     try {
       const data = await User.findAll({
-        attributes: [
-          "id",
-          "firstName",
-          "lastName",
-          "email",
-          "phoneNumber",
-          "address",
-          "authToken",
-          "createdAt",
-          "updatedAt",
-        ],
+        attributes: attributes,
       });
       if (data.length === 0) {
         throw new Error("Database is empty!");
@@ -39,17 +40,7 @@ class BasicUserController {
     try {
       const data = await User.findOne({
         where: { id: id },
-        attributes: [
-          "id",
-          "firstName",
-          "lastName",
-          "email",
-          "phoneNumber",
-          "address",
-          "authToken",
-          "createdAt",
-          "updatedAt",
-        ],
+        attributes: attributes,
       });
       if (!data) {
         throw new Error(`User with Id ${id} not found!`);
@@ -65,9 +56,8 @@ class BasicUserController {
 
 class RegisterController {
   static async postRegisterUser(req, res) {
-    const { firstName, lastName, email, phoneNumber, address, password } =
+    let { firstName, lastName, email, phoneNumber, address, password } =
       req.body;
-
     let statusCode = 201;
     let message = "Success";
 
@@ -77,15 +67,25 @@ class RegisterController {
     });
 
     try {
-      if (checkEmail) {
+      if (checkEmail === email) {
         throw new Error(
           `User with email ${email} already exist, try with different email`
         );
-      } else if (checkPhone) {
+      } else if (checkPhone === phoneNumber) {
         throw new Error(
           `User with phone number ${phoneNumber} already exist, try with different phone number`
         );
       }
+
+      User.beforeCreate(async (user) => {
+        user.email = user.email.toLowerCase();
+        // tambahkan akses untuk mengcustom phone number dalam bentuk (+62) ... ... ... ..
+      });
+
+      User.afterCreate(async (user) => {
+        message = `New user created with ID ${user.id}`;
+      });
+
       const saltRounds = 10;
       let hash = bcrypt.hashSync(password, saltRounds);
       await User.create({
@@ -98,18 +98,12 @@ class RegisterController {
       });
 
       const data = await User.findOne({
-        where: { firstName: firstName, lastName: lastName, email: email },
-        attributes: [
-          "id",
-          "firstName",
-          "lastName",
-          "email",
-          "phoneNumber",
-          "address",
-          "authToken",
-          "createdAt",
-          "updatedAt",
-        ],
+        where: {
+          firstName: firstName,
+          lastName: lastName,
+          email: email.toLowerCase(),
+        },
+        attributes: attributes,
       });
 
       return res.status(statusCode).json({ data, message });

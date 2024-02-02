@@ -1,4 +1,15 @@
 const { User, Order, Item } = require("../models");
+const attributes = [
+  "id",
+  "firstName",
+  "lastName",
+  "email",
+  "phoneNumber",
+  "address",
+  "authToken",
+  "createdAt",
+  "updatedAt",
+];
 
 class OrderItemController {
   static async getAllOrder(_, res) {
@@ -10,17 +21,7 @@ class OrderItemController {
         include: [
           {
             model: User,
-            attributes: [
-              "id",
-              "firstName",
-              "lastName",
-              "email",
-              "phoneNumber",
-              "address",
-              "authToken",
-              "createdAt",
-              "updatedAt",
-            ],
+            attributes: attributes,
           },
           { model: Item },
         ],
@@ -48,17 +49,7 @@ class OrderItemController {
         include: [
           {
             model: User,
-            attributes: [
-              "id",
-              "firstName",
-              "lastName",
-              "email",
-              "phoneNumber",
-              "address",
-              "authToken",
-              "createdAt",
-              "updatedAt",
-            ],
+            attributes: attributes,
           },
           { model: Item },
         ],
@@ -76,7 +67,6 @@ class OrderItemController {
   }
 
   static async postNewOrder(req, res) {
-    // fix this first!
     let { userId, itemName, quantity } = req.body;
     let statusCode = 201;
     let message = "Success";
@@ -85,13 +75,6 @@ class OrderItemController {
     try {
       const searchItem = await Item.findOne({ where: { name: itemName } });
       const isLogin = await User.findOne({ where: { id: userId } });
-      const orderCreate = await Order.create({
-        userId: userId,
-        itemId: searchItem.dataValues.id,
-        qty: quantity,
-        totalPrice: searchItem.dataValues.price * quantity,
-        status: "Not Paid",
-      });
 
       if (!isLogin?.dataValues?.authToken) {
         throw new Error("Need login action!");
@@ -100,6 +83,14 @@ class OrderItemController {
       if (searchItem.dataValues.stock <= 0) {
         throw new Error("Item out of stock!");
       }
+
+      const orderCreate = await Order.create({
+        userId: userId,
+        itemId: searchItem.dataValues.id,
+        qty: quantity,
+        totalPrice: searchItem.dataValues.price * quantity,
+        status: "Not Paid",
+      });
 
       await Item.update(
         {
@@ -117,17 +108,7 @@ class OrderItemController {
         include: [
           {
             model: User,
-            attributes: [
-              "id",
-              "firstName",
-              "lastName",
-              "email",
-              "phoneNumber",
-              "address",
-              "authToken",
-              "createdAt",
-              "updatedAt",
-            ],
+            attributes: attributes,
           },
           { model: Item },
         ],
@@ -165,17 +146,7 @@ class OrderItemController {
           include: [
             {
               model: User,
-              attributes: [
-                "id",
-                "firstName",
-                "lastName",
-                "email",
-                "phoneNumber",
-                "address",
-                "authToken",
-                "createdAt",
-                "updatedAt",
-              ],
+              attributes: attributes,
             },
             { model: Item },
           ],

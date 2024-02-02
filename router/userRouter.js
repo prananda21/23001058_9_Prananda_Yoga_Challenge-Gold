@@ -31,7 +31,6 @@ userRouter
 userRouter
   .route("/auth")
   .post(LoginController.postLoginUser) // DONE
-  .delete(LoginController.deleteLogoutUser)
   .all(methodNotAllowed);
 
 userRouter
